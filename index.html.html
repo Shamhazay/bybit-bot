@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --gold: #f0b90b;
+            --bg-dark: #080a0c;
+        }
+
+        body {
+            margin: 0; padding: 15px; height: 100vh;
+            display: flex; flex-direction: column;
+            /* Указываем твой новый файл как фон */
+            background: var(--bg-dark) url('bg.webp') no-repeat center center;
+            background-size: cover;
+            color: white; font-family: 'Segoe UI', sans-serif;
+            overflow: hidden; box-sizing: border-box;
+        }
+
+        /* Затемнение, чтобы кнопки и цифры были четко видны на фоне кубов */
+        .overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, rgba(8,10,12,0.4) 0%, rgba(8,10,12,0.8) 100%);
+            z-index: 0;
+        }
+
+        #coin-canvas {
+            position: absolute; top: 0; left: 0; z-index: 1;
+            pointer-events: none;
+        }
+
+        .content {
+            position: relative; z-index: 2;
+            display: flex; flex-direction: column; height: 100%;
+        }
+
+        .header {
+            text-align: center; padding-bottom: 15px;
+            font-size: 12px; letter-spacing: 3px; color: var(--gold);
+            text-transform: uppercase; font-weight: bold;
+        }
+
+        .card {
+            background: rgba(18, 20, 24, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(240, 185, 11, 0.2);
+            border-radius: 12px; padding: 20px; margin-bottom: 10px;
+        }
+
+        .label { color: #848e9c; font-size: 10px; text-transform: uppercase; margin-bottom: 5px; }
+        .value { font-size: 32px; font-weight: 800; }
+
+        .controls { margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 15px; }
+
+        button {
+            padding: 18px; border-radius: 12px; border: none;
+            font-size: 15px; font-weight: bold; text-transform: uppercase;
+            cursor: pointer; transition: 0.2s;
+        }
+
+        .btn-run { background: #0ecb81; color: white; }
+        .btn-pause { background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid #474d57; }
+        .btn-kill { background: #f6465d; color: white; }
+
+        button:active { transform: scale(0.97); }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <canvas id="coin-canvas"></canvas>
+
+    <div class="content">
+        <div class="header">BYBIT QUANT ELITE V4.2</div>
+
+        <div class="card">
+            <div class="label">Total Equity (USDT)</div>
+            <div class="value">$166,885.20</div>
+            <div style="color: #0ecb81; font-size: 13px; margin-top: 5px; font-weight: bold;">🟢 АЛГОРИТМ ЗАПУЩЕН</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="card">
+                <div class="label">Position</div>
+                <div style="font-size: 18px; font-weight: bold; color: #f6465d;">SHORT BTC</div>
+            </div>
+            <div class="card">
+                <div class="label">Size</div>
+                <div style="font-size: 18px; font-weight: bold;">0.248</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-run" onclick="send('run')">▶ ЗАПУСТИТЬ АЛГОРИТМ</button>
+            <button class="btn-pause" onclick="send('pause')">⏸ ПАУЗА</button>
+            <button class="btn-kill" onclick="send('kill')">🚨 АВАРИЙНЫЙ ВЫХОД</button>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        function send(cmd) {
+            tg.sendData(cmd);
+            tg.HapticFeedback.notificationOccurred('success');
+        }
+
+        // Анимация монет поверх твоего фона
+        const canvas = document.getElementById('coin-canvas');
+        const ctx = canvas.getContext('2d');
+        let w, h;
+        function init() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+        window.onresize = init; init();
+
+        const coins = Array.from({length: 20}, () => ({
+            x: Math.random()*w, y: Math.random()*h,
+            v: 0.3 + Math.random(), char: ['₿','Ξ','₮'][Math.floor(Math.random()*3)]
+        }));
+
+        function draw() {
+            ctx.clearRect(0, 0, w, h);
+            ctx.fillStyle = "rgba(240, 185, 11, 0.3)";
+            ctx.font = "20px serif";
+            coins.forEach(c => {
+                c.y -= c.v; if(c.y < -20) c.y = h + 20;
+                ctx.fillText(c.char, c.x, c.y);
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    </script>
+</body>
+</html>
