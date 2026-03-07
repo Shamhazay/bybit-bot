@@ -144,3 +144,13 @@
     </script>
 </body>
 </html>
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.expand(); 
+
+    function send(cmd) {
+        tg.sendData(cmd); // Отправляет 'run', 'pause' или 'kill' в Python
+        tg.HapticFeedback.notificationOccurred('success');
+        tg.close(); // Закрывает шторку, чтобы сразу видеть чат
+    }
+</script>
