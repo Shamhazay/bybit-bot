@@ -1,160 +1,37 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        // Инициализация
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready(); 
+
+        function send(cmd) {
+            // Пытаемся отправить данные боту
+            try {
+                tg.sendData(cmd); 
+                tg.HapticFeedback.notificationOccurred('success');
+                // Закрываем через полсекунды, чтобы команда успела улететь
+                setTimeout(() => { tg.close(); }, 500);
+            } catch (e) {
+                alert("Ошибка отправки: " + e);
+            }
+        }
+    </script>
     <style>
-        :root {
-            --gold: #f0b90b;
-            --bg-dark: #080a0c;
-            --red: #ff4d4d;
-            --blue: #3498db;
-        }
-
-        body {
-            margin: 0; padding: 15px; height: 100vh;
-            display: flex; flex-direction: column;
-            /* Фон с твоим изображением */
-            background: var(--bg-dark) url('i.webp') no-repeat center center;
-            background-size: cover;
-            color: white; font-family: 'Inter', -apple-system, sans-serif;
-            overflow: hidden; box-sizing: border-box;
-        }
-
-        .overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, rgba(8,10,12,0.3) 0%, rgba(8,10,12,0.8) 100%);
-            z-index: 0;
-        }
-
-        .content {
-            position: relative; z-index: 10;
-            display: flex; flex-direction: column;
-            height: 100%; justify-content: space-between;
-        }
-
-        .header {
-            text-align: center; margin-top: 20px;
-        }
-
-        .header h1 {
-            color: var(--gold); font-size: 24px; margin: 0;
-            text-transform: uppercase; letter-spacing: 2px;
-            text-shadow: 0 0 15px rgba(240, 185, 11, 0.5);
-        }
-
-        .stats-container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 15px; border: 1px solid rgba(240, 185, 11, 0.2);
-            padding: 20px; margin: 20px 0;
-        }
-
-        .stat-row {
-            display: flex; justify-content: space-between; margin-bottom: 10px;
-        }
-
-        .stat-label { color: #888; font-size: 14px; }
-        .stat-value { color: var(--gold); font-weight: bold; }
-
-        .btn-group {
-            display: flex; flex-direction: column; gap: 12px;
-            margin-bottom: 30px;
-        }
-
-        button {
-            padding: 18px; border-radius: 12px; border: none;
-            font-size: 16px; font-weight: bold; cursor: pointer;
-            transition: all 0.2s ease; text-transform: uppercase;
-        }
-
-        .btn-run { background: var(--blue); color: white; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3); }
-        .btn-pause { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
-        .btn-kill { background: var(--red); color: white; box-shadow: 0 4px 15px rgba(255, 77, 77, 0.3); }
-
-        button:active { transform: scale(0.95); opacity: 0.8; }
-
-        #coin-canvas {
-            position: absolute; top: 0; left: 0; z-index: 1; pointer-events: none;
-        }
+        body { background: #080a0c url('i.webp') no-repeat center; background-size: cover; color: white; font-family: sans-serif; text-align: center; display: flex; flex-direction: column; height: 100vh; justify-content: center; margin: 0; }
+        .btn { padding: 20px; margin: 10px; border-radius: 12px; border: none; font-weight: bold; text-transform: uppercase; cursor: pointer; }
+        .run { background: #3498db; }
+        .kill { background: #ff4d4d; }
     </style>
 </head>
 <body>
-    <div class="overlay"></div>
-    <canvas id="coin-canvas"></canvas>
-
-    <div class="content">
-        <div class="header">
-            <h1>Bybit Terminal</h1>
-            <p style="color: #666; font-size: 12px;">V 4.2 MARKET MAKER</p>
-        </div>
-
-        <div class="stats-container">
-            <div class="stat-row">
-                <span class="stat-label">Symbol</span>
-                <span class="stat-value">BTC/USDT</span>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label">Status</span>
-                <span id="status-text" class="stat-value" style="color: #444;">Standby</span>
-            </div>
-        </div>
-
-        <div class="btn-group">
-            <button class="btn-run" onclick="send('run')">▶ Launch Strategy</button>
-            <button class="btn-pause" onclick="send('pause')">⏸ Hold System</button>
-            <button class="btn-kill" onclick="send('kill')">🚨 Emergency Stop</button>
-        </div>
-    </div>
-
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.ready(); // Важно: сообщаем TG, что приложение готово
-
-        function send(cmd) {
-            // Отправка команды боту
-            tg.sendData(cmd);
-            
-            // Визуальный отклик
-            tg.HapticFeedback.notificationOccurred('success');
-            
-            // Если команда KILL, меняем цвет статуса для наглядности
-            if(cmd === 'kill') {
-                document.getElementById('status-text').style.color = '#ff4d4d';
-                document.getElementById('status-text').innerText = 'EMERGENCY STOP';
-            }
-            
-            // Закрываем окно, чтобы пользователь увидел ответ бота в чате
-            setTimeout(() => {
-                tg.close();
-            }, 500);
-        }
-
-        // Фоновая анимация частиц
-        const canvas = document.getElementById('coin-canvas');
-        const ctx = canvas.getContext('2d');
-        let w, h;
-        function init() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
-        window.onresize = init; init();
-
-        const particles = Array.from({length: 20}, () => ({
-            x: Math.random()*w, y: Math.random()*h,
-            v: 0.2 + Math.random()*0.4, 
-            s: Math.random()*2, opacity: Math.random()*0.5
-        }));
-
-        function draw() {
-            ctx.clearRect(0, 0, w, h);
-            particles.forEach(p => {
-                ctx.fillStyle = `rgba(240, 185, 11, ${p.opacity})`;
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill();
-                p.y -= p.v; if(p.y < -10) p.y = h + 10;
-            });
-            requestAnimationFrame(draw);
-        }
-        draw();
-    </script>
+    <h2>BYBIT MM TERMINAL</h2>
+    <button class="btn run" onclick="send('run')">▶ Launch Strategy</button>
+    <button class="btn" style="background: #333" onclick="send('pause')">⏸ Hold System</button>
+    <button class="btn kill" onclick="send('kill')">🚨 Emergency Stop</button>
 </body>
 </html>
