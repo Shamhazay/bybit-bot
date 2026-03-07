@@ -4,33 +4,24 @@
     <meta charset="utf-8">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { background: #080a0c; color: white; font-family: sans-serif; text-align: center; padding-top: 50px; }
-        .btn { display: block; width: 80%; margin: 20px auto; padding: 25px; border-radius: 15px; border: none; font-size: 20px; font-weight: bold; cursor: pointer; }
+        body { background: #080a0c; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
+        button { display: block; width: 100%; padding: 20px; margin: 10px 0; border-radius: 12px; border: none; font-size: 18px; font-weight: bold; cursor: pointer; }
         .run { background: #3498db; }
         .kill { background: #e74c3c; }
     </style>
 </head>
 <body>
-    <h2>MM TERMINAL V4.2</h2>
-    <button class="btn run" onclick="send('run')">LAUNCH STRATEGY</button>
-    <button class="btn kill" onclick="send('kill')">EMERGENCY STOP</button>
+    <h2>BYBIT CONTROL</h2>
+    <button class="run" onclick="sendData('run')">LAUNCH</button>
+    <button class="kill" onclick="sendData('kill')">STOP / KILL</button>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-        tg.ready();
 
-        function send(cmd) {
-            // 1. Сначала отправляем данные
-            tg.sendData(cmd);
-            
-            // 2. Даем небольшую вибрацию
-            tg.HapticFeedback.impactOccurred('heavy');
-            
-            // 3. ЗАКРЫВАЕМ НЕ СРАЗУ (даем 300мс на отправку в сеть)
-            setTimeout(() => {
-                tg.close();
-            }, 300);
+        function sendData(command) {
+            tg.sendData(command); // Отправляет текст боту
+            tg.close(); // Закрывает Mini App
         }
     </script>
 </body>
