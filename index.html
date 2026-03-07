@@ -8,69 +8,76 @@
         :root {
             --gold: #f0b90b;
             --bg-dark: #080a0c;
+            --red: #ff4d4d;
+            --blue: #3498db;
         }
 
         body {
             margin: 0; padding: 15px; height: 100vh;
             display: flex; flex-direction: column;
-            /* Твой выбранный фон */
+            /* Фон с твоим изображением */
             background: var(--bg-dark) url('i.webp') no-repeat center center;
             background-size: cover;
-            color: white; font-family: 'Inter', sans-serif;
+            color: white; font-family: 'Inter', -apple-system, sans-serif;
             overflow: hidden; box-sizing: border-box;
         }
 
-        /* Наложение для глубины и читаемости текста */
         .overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, rgba(8,10,12,0.2) 0%, rgba(8,10,12,0.8) 100%);
+            background: radial-gradient(circle, rgba(8,10,12,0.3) 0%, rgba(8,10,12,0.8) 100%);
             z-index: 0;
         }
 
-        #coin-canvas {
-            position: absolute; top: 0; left: 0; z-index: 1;
-            pointer-events: none;
-        }
-
         .content {
-            position: relative; z-index: 2;
-            display: flex; flex-direction: column; height: 100%;
+            position: relative; z-index: 10;
+            display: flex; flex-direction: column;
+            height: 100%; justify-content: space-between;
         }
 
         .header {
-            text-align: center; padding-bottom: 10px;
-            font-size: 11px; letter-spacing: 4px; color: var(--gold);
-            text-transform: uppercase; font-weight: 900;
-            opacity: 0.8;
+            text-align: center; margin-top: 20px;
         }
 
-        .card {
-            background: rgba(18, 20, 24, 0.75);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(240, 185, 11, 0.2);
-            border-radius: 14px; padding: 20px; margin-bottom: 12px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        .header h1 {
+            color: var(--gold); font-size: 24px; margin: 0;
+            text-transform: uppercase; letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(240, 185, 11, 0.5);
         }
 
-        .label { color: #848e9c; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-        .value { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; }
+        .stats-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px; border: 1px solid rgba(240, 185, 11, 0.2);
+            padding: 20px; margin: 20px 0;
+        }
 
-        .pos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .stat-row {
+            display: flex; justify-content: space-between; margin-bottom: 10px;
+        }
 
-        .controls { margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 15px; }
+        .stat-label { color: #888; font-size: 14px; }
+        .stat-value { color: var(--gold); font-weight: bold; }
+
+        .btn-group {
+            display: flex; flex-direction: column; gap: 12px;
+            margin-bottom: 30px;
+        }
 
         button {
             padding: 18px; border-radius: 12px; border: none;
-            font-size: 14px; font-weight: 800; text-transform: uppercase;
-            cursor: pointer; transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 16px; font-weight: bold; cursor: pointer;
+            transition: all 0.2s ease; text-transform: uppercase;
         }
 
-        .btn-run { background: #0ecb81; color: white; }
-        .btn-pause { background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid #474d57; }
-        .btn-kill { background: #f6465d; color: white; }
+        .btn-run { background: var(--blue); color: white; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3); }
+        .btn-pause { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
+        .btn-kill { background: var(--red); color: white; box-shadow: 0 4px 15px rgba(255, 77, 77, 0.3); }
 
-        button:active { transform: scale(0.96); opacity: 0.9; }
+        button:active { transform: scale(0.95); opacity: 0.8; }
+
+        #coin-canvas {
+            position: absolute; top: 0; left: 0; z-index: 1; pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -78,28 +85,23 @@
     <canvas id="coin-canvas"></canvas>
 
     <div class="content">
-        <div class="header">MM QUANT TERMINAL V4.2</div>
+        <div class="header">
+            <h1>Bybit Terminal</h1>
+            <p style="color: #666; font-size: 12px;">V 4.2 MARKET MAKER</p>
+        </div>
 
-        <div class="card">
-            <div class="label">Total Equity (USDT)</div>
-            <div class="value">$166,885.20</div>
-            <div style="color: #0ecb81; font-size: 12px; margin-top: 6px; font-weight: 700;">
-                🟢 ПОДКЛЮЧЕНО К BYBIT | +0.24%
+        <div class="stats-container">
+            <div class="stat-row">
+                <span class="stat-label">Symbol</span>
+                <span class="stat-value">BTC/USDT</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Status</span>
+                <span id="status-text" class="stat-value" style="color: #444;">Standby</span>
             </div>
         </div>
 
-        <div class="pos-grid">
-            <div class="card">
-                <div class="label">Position</div>
-                <div style="font-size: 18px; font-weight: 800; color: #f6465d;">SHORT BTC</div>
-            </div>
-            <div class="card">
-                <div class="label">Open Size</div>
-                <div style="font-size: 18px; font-weight: 800;">0.248 BTC</div>
-            </div>
-        </div>
-
-        <div class="controls">
+        <div class="btn-group">
             <button class="btn-run" onclick="send('run')">▶ Launch Strategy</button>
             <button class="btn-pause" onclick="send('pause')">⏸ Hold System</button>
             <button class="btn-kill" onclick="send('kill')">🚨 Emergency Stop</button>
@@ -109,33 +111,45 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-        tg.setHeaderColor('#080a0c');
+        tg.ready(); // Важно: сообщаем TG, что приложение готово
 
         function send(cmd) {
+            // Отправка команды боту
             tg.sendData(cmd);
+            
+            // Визуальный отклик
             tg.HapticFeedback.notificationOccurred('success');
+            
+            // Если команда KILL, меняем цвет статуса для наглядности
+            if(cmd === 'kill') {
+                document.getElementById('status-text').style.color = '#ff4d4d';
+                document.getElementById('status-text').innerText = 'EMERGENCY STOP';
+            }
+            
+            // Закрываем окно, чтобы пользователь увидел ответ бота в чате
+            setTimeout(() => {
+                tg.close();
+            }, 500);
         }
 
-        // Анимация частиц золота поверх твоего фона
+        // Фоновая анимация частиц
         const canvas = document.getElementById('coin-canvas');
         const ctx = canvas.getContext('2d');
         let w, h;
         function init() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
         window.onresize = init; init();
 
-        const particles = Array.from({length: 25}, () => ({
+        const particles = Array.from({length: 20}, () => ({
             x: Math.random()*w, y: Math.random()*h,
-            v: 0.2 + Math.random()*0.5, 
-            s: Math.random()*2, opacity: 0.2 + Math.random()*0.5
+            v: 0.2 + Math.random()*0.4, 
+            s: Math.random()*2, opacity: Math.random()*0.5
         }));
 
         function draw() {
             ctx.clearRect(0, 0, w, h);
             particles.forEach(p => {
                 ctx.fillStyle = `rgba(240, 185, 11, ${p.opacity})`;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.s, 0, Math.PI*2);
-                ctx.fill();
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill();
                 p.y -= p.v; if(p.y < -10) p.y = h + 10;
             });
             requestAnimationFrame(draw);
@@ -144,13 +158,3 @@
     </script>
 </body>
 </html>
-<script>
-    const tg = window.Telegram.WebApp;
-    tg.expand(); 
-
-    function send(cmd) {
-        tg.sendData(cmd); // Отправляет 'run', 'pause' или 'kill' в Python
-        tg.HapticFeedback.notificationOccurred('success');
-        tg.close(); // Закрывает шторку, чтобы сразу видеть чат
-    }
-</script>
