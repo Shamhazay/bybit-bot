@@ -13,17 +13,17 @@
         body {
             margin: 0; padding: 15px; height: 100vh;
             display: flex; flex-direction: column;
-            /* Указываем твой новый файл как фон */
-            background: var(--bg-dark) url('bg.webp') no-repeat center center;
+            /* Твой выбранный фон */
+            background: var(--bg-dark) url('i.webp') no-repeat center center;
             background-size: cover;
-            color: white; font-family: 'Segoe UI', sans-serif;
+            color: white; font-family: 'Inter', sans-serif;
             overflow: hidden; box-sizing: border-box;
         }
 
-        /* Затемнение, чтобы кнопки и цифры были четко видны на фоне кубов */
+        /* Наложение для глубины и читаемости текста */
         .overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(180deg, rgba(8,10,12,0.4) 0%, rgba(8,10,12,0.8) 100%);
+            background: radial-gradient(circle, rgba(8,10,12,0.2) 0%, rgba(8,10,12,0.8) 100%);
             z-index: 0;
         }
 
@@ -38,34 +38,39 @@
         }
 
         .header {
-            text-align: center; padding-bottom: 15px;
-            font-size: 12px; letter-spacing: 3px; color: var(--gold);
-            text-transform: uppercase; font-weight: bold;
+            text-align: center; padding-bottom: 10px;
+            font-size: 11px; letter-spacing: 4px; color: var(--gold);
+            text-transform: uppercase; font-weight: 900;
+            opacity: 0.8;
         }
 
         .card {
-            background: rgba(18, 20, 24, 0.7);
-            backdrop-filter: blur(10px);
+            background: rgba(18, 20, 24, 0.75);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(240, 185, 11, 0.2);
-            border-radius: 12px; padding: 20px; margin-bottom: 10px;
+            border-radius: 14px; padding: 20px; margin-bottom: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
         }
 
-        .label { color: #848e9c; font-size: 10px; text-transform: uppercase; margin-bottom: 5px; }
-        .value { font-size: 32px; font-weight: 800; }
+        .label { color: #848e9c; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .value { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; }
+
+        .pos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
         .controls { margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 15px; }
 
         button {
             padding: 18px; border-radius: 12px; border: none;
-            font-size: 15px; font-weight: bold; text-transform: uppercase;
-            cursor: pointer; transition: 0.2s;
+            font-size: 14px; font-weight: 800; text-transform: uppercase;
+            cursor: pointer; transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .btn-run { background: #0ecb81; color: white; }
         .btn-pause { background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid #474d57; }
         .btn-kill { background: #f6465d; color: white; }
 
-        button:active { transform: scale(0.97); }
+        button:active { transform: scale(0.96); opacity: 0.9; }
     </style>
 </head>
 <body>
@@ -73,60 +78,65 @@
     <canvas id="coin-canvas"></canvas>
 
     <div class="content">
-        <div class="header">BYBIT QUANT ELITE V4.2</div>
+        <div class="header">MM QUANT TERMINAL V4.2</div>
 
         <div class="card">
             <div class="label">Total Equity (USDT)</div>
             <div class="value">$166,885.20</div>
-            <div style="color: #0ecb81; font-size: 13px; margin-top: 5px; font-weight: bold;">🟢 АЛГОРИТМ ЗАПУЩЕН</div>
+            <div style="color: #0ecb81; font-size: 12px; margin-top: 6px; font-weight: 700;">
+                🟢 ПОДКЛЮЧЕНО К BYBIT | +0.24%
+            </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="pos-grid">
             <div class="card">
                 <div class="label">Position</div>
-                <div style="font-size: 18px; font-weight: bold; color: #f6465d;">SHORT BTC</div>
+                <div style="font-size: 18px; font-weight: 800; color: #f6465d;">SHORT BTC</div>
             </div>
             <div class="card">
-                <div class="label">Size</div>
-                <div style="font-size: 18px; font-weight: bold;">0.248</div>
+                <div class="label">Open Size</div>
+                <div style="font-size: 18px; font-weight: 800;">0.248 BTC</div>
             </div>
         </div>
 
         <div class="controls">
-            <button class="btn-run" onclick="send('run')">▶ ЗАПУСТИТЬ АЛГОРИТМ</button>
-            <button class="btn-pause" onclick="send('pause')">⏸ ПАУЗА</button>
-            <button class="btn-kill" onclick="send('kill')">🚨 АВАРИЙНЫЙ ВЫХОД</button>
+            <button class="btn-run" onclick="send('run')">▶ Launch Strategy</button>
+            <button class="btn-pause" onclick="send('pause')">⏸ Hold System</button>
+            <button class="btn-kill" onclick="send('kill')">🚨 Emergency Stop</button>
         </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
+        tg.setHeaderColor('#080a0c');
 
         function send(cmd) {
             tg.sendData(cmd);
             tg.HapticFeedback.notificationOccurred('success');
         }
 
-        // Анимация монет поверх твоего фона
+        // Анимация частиц золота поверх твоего фона
         const canvas = document.getElementById('coin-canvas');
         const ctx = canvas.getContext('2d');
         let w, h;
         function init() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
         window.onresize = init; init();
 
-        const coins = Array.from({length: 20}, () => ({
+        const particles = Array.from({length: 25}, () => ({
             x: Math.random()*w, y: Math.random()*h,
-            v: 0.3 + Math.random(), char: ['₿','Ξ','₮'][Math.floor(Math.random()*3)]
+            v: 0.2 + Math.random()*0.5, 
+            s: Math.random()*2, opacity: 0.2 + Math.random()*0.5
         }));
 
         function draw() {
             ctx.clearRect(0, 0, w, h);
-            ctx.fillStyle = "rgba(240, 185, 11, 0.3)";
-            ctx.font = "20px serif";
-            coins.forEach(c => {
-                c.y -= c.v; if(c.y < -20) c.y = h + 20;
-                ctx.fillText(c.char, c.x, c.y);
+            particles.forEach(p => {
+                ctx.fillStyle = `rgba(240, 185, 11, ${p.opacity})`;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.s, 0, Math.PI*2);
+                ctx.fill();
+                p.y -= p.v; if(p.y < -10) p.y = h + 10;
             });
             requestAnimationFrame(draw);
         }
