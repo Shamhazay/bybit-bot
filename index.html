@@ -2,36 +2,42 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script>
-        // Инициализация
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.ready(); 
-
-        function send(cmd) {
-            // Пытаемся отправить данные боту
-            try {
-                tg.sendData(cmd); 
-                tg.HapticFeedback.notificationOccurred('success');
-                // Закрываем через полсекунды, чтобы команда успела улететь
-                setTimeout(() => { tg.close(); }, 500);
-            } catch (e) {
-                alert("Ошибка отправки: " + e);
-            }
-        }
-    </script>
     <style>
-        body { background: #080a0c url('i.webp') no-repeat center; background-size: cover; color: white; font-family: sans-serif; text-align: center; display: flex; flex-direction: column; height: 100vh; justify-content: center; margin: 0; }
-        .btn { padding: 20px; margin: 10px; border-radius: 12px; border: none; font-weight: bold; text-transform: uppercase; cursor: pointer; }
-        .run { background: #3498db; }
-        .kill { background: #ff4d4d; }
+        body { background: #080a0c; color: white; font-family: sans-serif; text-align: center; padding: 20px; margin: 0; display: flex; flex-direction: column; justify-content: center; height: 100vh; }
+        .btn { display: block; width: 100%; padding: 25px; margin: 10px 0; border-radius: 15px; border: none; color: white; font-weight: bold; font-size: 20px; cursor: pointer; text-transform: uppercase; transition: transform 0.1s; }
+        .run { background: #3498db; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4); }
+        .pause { background: #333; }
+        .kill { background: #e74c3c; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4); }
+        .btn:active { transform: scale(0.96); }
     </style>
 </head>
 <body>
-    <h2>BYBIT MM TERMINAL</h2>
+    <h1 style="color: #f0b90b;">BYBIT MM</h1>
+    <p style="color: #666; margin-bottom: 30px;">V4.2 TERMINAL</p>
+
     <button class="btn run" onclick="send('run')">▶ Launch Strategy</button>
-    <button class="btn" style="background: #333" onclick="send('pause')">⏸ Hold System</button>
+    <button class="btn pause" onclick="send('pause')">⏸ Hold System</button>
     <button class="btn kill" onclick="send('kill')">🚨 Emergency Stop</button>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Развернуть на весь экран
+        tg.ready();  // Сообщить, что приложение готово
+
+        function send(cmd) {
+            // Самая важная команда для связи с Python
+            tg.sendData(cmd); 
+            
+            // Вибрация (для красоты)
+            tg.HapticFeedback.notificationOccurred('success');
+            
+            // Закрываем шторку (команда уйдет в момент закрытия)
+            setTimeout(() => {
+                tg.close();
+            }, 100);
+        }
+    </script>
 </body>
 </html>
