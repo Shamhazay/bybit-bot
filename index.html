@@ -2,41 +2,35 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { background: #080a0c; color: white; font-family: sans-serif; text-align: center; padding: 20px; margin: 0; display: flex; flex-direction: column; justify-content: center; height: 100vh; }
-        .btn { display: block; width: 100%; padding: 25px; margin: 10px 0; border-radius: 15px; border: none; color: white; font-weight: bold; font-size: 20px; cursor: pointer; text-transform: uppercase; transition: transform 0.1s; }
-        .run { background: #3498db; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4); }
-        .pause { background: #333; }
-        .kill { background: #e74c3c; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4); }
-        .btn:active { transform: scale(0.96); }
+        body { background: #080a0c; color: white; font-family: sans-serif; text-align: center; padding-top: 50px; }
+        .btn { display: block; width: 80%; margin: 20px auto; padding: 25px; border-radius: 15px; border: none; font-size: 20px; font-weight: bold; cursor: pointer; }
+        .run { background: #3498db; }
+        .kill { background: #e74c3c; }
     </style>
 </head>
 <body>
-    <h1 style="color: #f0b90b;">BYBIT MM</h1>
-    <p style="color: #666; margin-bottom: 30px;">V4.2 TERMINAL</p>
-
-    <button class="btn run" onclick="send('run')">▶ Launch Strategy</button>
-    <button class="btn pause" onclick="send('pause')">⏸ Hold System</button>
-    <button class="btn kill" onclick="send('kill')">🚨 Emergency Stop</button>
+    <h2>MM TERMINAL V4.2</h2>
+    <button class="btn run" onclick="send('run')">LAUNCH STRATEGY</button>
+    <button class="btn kill" onclick="send('kill')">EMERGENCY STOP</button>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Развернуть на весь экран
-        tg.ready();  // Сообщить, что приложение готово
+        tg.expand();
+        tg.ready();
 
         function send(cmd) {
-            // Самая важная команда для связи с Python
-            tg.sendData(cmd); 
+            // 1. Сначала отправляем данные
+            tg.sendData(cmd);
             
-            // Вибрация (для красоты)
-            tg.HapticFeedback.notificationOccurred('success');
+            // 2. Даем небольшую вибрацию
+            tg.HapticFeedback.impactOccurred('heavy');
             
-            // Закрываем шторку (команда уйдет в момент закрытия)
+            // 3. ЗАКРЫВАЕМ НЕ СРАЗУ (даем 300мс на отправку в сеть)
             setTimeout(() => {
                 tg.close();
-            }, 100);
+            }, 300);
         }
     </script>
 </body>
