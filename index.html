@@ -12,85 +12,101 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Фон с нежными весенними цветами */
+            background: linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)), 
+                        url('https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
             overflow: hidden;
-            color: #880e4f;
         }
 
-        .card {
-            background: rgba(255, 255, 255, 0.8);
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
             padding: 40px;
-            border-radius: 20px;
+            border-radius: 25px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             text-align: center;
-            backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.5);
-            max-width: 400px;
+            max-width: 450px;
             z-index: 10;
-            animation: fadeIn 2s ease-out;
         }
 
         h1 {
-            font-size: 3rem;
+            color: #d81b60;
+            font-size: 2.5rem;
             margin-bottom: 10px;
-            animation: bounce 2s infinite;
         }
 
         p {
-            font-size: 1.2rem;
-            line-height: 1.6;
+            color: #4a4a4a;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 25px;
         }
 
-        .heart {
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-main {
+            background: #ff4081;
+            color: white;
+        }
+
+        .btn-main:hover {
+            background: #f50057;
+            transform: scale(1.02);
+        }
+
+        /* Анимация падающих лепестков */
+        .petal {
             position: absolute;
-            color: #ff80ab;
-            font-size: 20px;
-            user-select: none;
-            z-index: 1;
-            animation: float 5s linear infinite;
-            opacity: 0;
+            background-color: #ffc1e3;
+            border-radius: 150% 0 150% 0;
+            opacity: 0.7;
+            pointer-events: none;
+            animation: fall linear infinite;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        @keyframes float {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); }
+            100% { transform: translateY(110vh) rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h1>8 Марта 🌷</h1>
-        <p>Пусть весна расцветает не только на улице, но и в душе! Желаю бесконечного вдохновения, море улыбок и самых ярких моментов. Ты прекрасна!</p>
+    <div class="glass-card">
+        <h1>С 8 Марта! 🌷</h1>
+        <p>Пусть этот весенний день принесет море радости, вдохновения и тепла. Оставайся такой же прекрасной и удивительной!</p>
+        
+        <button class="btn btn-main" onclick="alert('Вы самая лучшая!')">Получить комплимент ✨</button>
     </div>
 
     <script>
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerHTML = '🌸';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
-            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
-            document.body.appendChild(heart);
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.width = Math.random() * 15 + 10 + 'px';
+            petal.style.height = petal.style.width;
+            petal.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(petal);
 
-            setTimeout(() => {
-                heart.remove();
-            }, 5000);
+            setTimeout(() => petal.remove(), 5000);
         }
-
-        setInterval(createHeart, 300);
+        setInterval(createPetal, 200);
     </script>
 </body>
 </html>
