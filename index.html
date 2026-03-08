@@ -1,30 +1,96 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>С 8 Марта!</title>
     <style>
-        body { background: #080a0c; color: white; font-family: sans-serif; text-align: center; padding: 20px; margin: 0; }
-        .btn { display: block; width: 100%; padding: 25px; margin: 10px 0; border-radius: 12px; border: none; color: white; font-weight: bold; font-size: 20px; cursor: pointer; text-transform: uppercase; }
-        .run { background: #3498db; }
-        .kill { background: #e74c3c; }
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            color: #880e4f;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.5);
+            max-width: 400px;
+            z-index: 10;
+            animation: fadeIn 2s ease-out;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            animation: bounce 2s infinite;
+        }
+
+        p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .heart {
+            position: absolute;
+            color: #ff80ab;
+            font-size: 20px;
+            user-select: none;
+            z-index: 1;
+            animation: float 5s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
     </style>
 </head>
 <body>
-    <h2>BYBIT MM TERMINAL</h2>
-    <button class="btn run" onclick="send('run')">▶ Launch Strategy</button>
-    <button class="btn kill" onclick="send('kill')">🚨 Emergency Stop</button>
+
+    <div class="card">
+        <h1>8 Марта 🌷</h1>
+        <p>Пусть весна расцветает не только на улице, но и в душе! Желаю бесконечного вдохновения, море улыбок и самых ярких моментов. Ты прекрасна!</p>
+    </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.ready();
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '🌸';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+            document.body.appendChild(heart);
 
-        function send(cmd) {
-            tg.sendData(cmd); // Отправляем команду в чат боту
-            tg.close();       // Закрываем окно (важно для отправки)
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
         }
+
+        setInterval(createHeart, 300);
     </script>
 </body>
 </html>
